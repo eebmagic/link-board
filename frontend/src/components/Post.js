@@ -4,20 +4,21 @@ import { Button } from 'primereact/button';
 import ReactMarkdown from 'react-markdown';
 import { addLink } from '../helpers/api';
 
-const Post = ({ onLinkAdded }) => {
+const Post = ({ onLinkAdded, showToast }) => {
   const [text, setText] = useState('');
-  const [isPreview, setIsPreview] = useState(false);
 
   const handleSubmit = async () => {
     try {
       await addLink(text);
       setText('');
+      showToast('success', 'Success', 'Link added successfully');
 
       if (onLinkAdded) {
         onLinkAdded();
       }
     } catch (error) {
       console.error('Error posting link:', error);
+      showToast('error', 'Error', 'Failed to add link');
     }
   };
 

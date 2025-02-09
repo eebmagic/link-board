@@ -1,12 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 // import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { getLinkPreview } from 'link-preview-js';
 import { Button } from 'primereact/button';
 import ReactMarkdown from 'react-markdown';
+import { deleteLink } from '../helpers/api';
+import { Dialog } from 'primereact/dialog';
+import { Toast } from 'primereact/toast';
 
-const Link = ({ link }) => {
+const Link = ({ link, onDelete }) => {
+  const toast = useRef(null);
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(link.link);
+    toast.current.show({
+      severity: 'success',
+      summary: 'Copied',
+      detail: 'Content copied to clipboard',
+      life: 3000
+    });
+  };
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteLink(link.idx);
+      if (onDelete) {
+        onDelete(link.idx);
+      }
+      setShowDeleteDialog(false);
+      console.log('Creating success toast');
+      toast.current.show({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: 'Item successfully deleted',
+        life: 3000
+      });
+    } catch (error) {
+      console.error('Error deleting link:', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to delete item',
+        life: 3000
+      });
+    }
   };
 
   // URL validation regex
@@ -24,9 +62,9 @@ const Link = ({ link }) => {
   const [preview, setPreview] = useState(null);
   if (isUrl) {
     console.log(`Creating link card for link:`, link);
-    const prevresult = getLinkPreview(link.link);
-    setPreview(prevresult);
-    console.log(`Preview:`, prevresult);
+    // const prevresult = getLinkPreview(link.link);
+    // setPreview(prevresult);
+    // console.log(`Preview:`, prevresult);
   }
 
   return (
@@ -37,6 +75,7 @@ const Link = ({ link }) => {
       borderRadius: '8px',
       maxWidth: '500px'
     }}>
+      <Toast ref={toast} />
       {isUrl ? (
         // Handle as link
         <>
@@ -79,14 +118,35 @@ const Link = ({ link }) => {
           </div>
         </>
       )}
-      <div style={{marginTop: '1rem', display: 'flex', justifyContent: 'flex-end'}}>
-        <Button 
-          icon="pi pi-copy" 
+      <div style={{marginTop: '1rem', display: 'flex', justifyContent: 'flex-end', gap: '0.5rem'}}>
+        <Button
+          icon="pi pi-trash"
+          severity="danger"
+          onClick={() => setShowDeleteDialog(true)}
+          tooltip="Delete"
+          tooltipOptions={{ position: 'top' }}
+        />
+        <Button
+          icon="pi pi-copy"
           onClick={copyToClipboard}
           tooltip="Copy content"
           tooltipOptions={{ position: 'top' }}
         />
       </div>
+
+      <Dialog
+        visible={showDeleteDialog}
+        onHide={() => setShowDeleteDialog(false)}
+        header="Confirm Deletion"
+        footer={
+          <div>
+            <Button label="No" icon="pi pi-times" onClick={() => setShowDeleteDialog(false)} className="p-button-text" />
+            <Button label="Yes" icon="pi pi-check" onClick={handleDelete} severity="danger" autoFocus />
+          </div>
+        }
+      >
+        <p>Are you sure you want to delete this item?</p>
+      </Dialog>
     </div>
   );
 };

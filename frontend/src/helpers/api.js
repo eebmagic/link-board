@@ -40,3 +40,17 @@ export const addLink = async (text) => {
     return response.json();
 };
 
+export const deleteLink = async (idx) => {
+    const response = await fetch(`${API_BASE}/delete/${idx}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to delete link');
+    }
+
+    return response.json();
+};
