@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 // import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { getLinkPreview } from 'link-preview-js';
 import { Button } from 'primereact/button';
@@ -60,12 +60,22 @@ const Link = ({ link, onDelete }) => {
   };
 
   const [preview, setPreview] = useState(null);
-  if (isUrl) {
-    console.log(`Creating link card for link:`, link);
-    // const prevresult = getLinkPreview(link.link);
-    // setPreview(prevresult);
-    // console.log(`Preview:`, prevresult);
-  }
+
+  useEffect(() => {
+    const fetchPreview = async () => {
+      if (isUrl) {
+        try {
+          const prevresult = await getLinkPreview(link.link);
+          setPreview(prevresult);
+          console.log(`Preview:`, prevresult);
+        } catch (error) {
+          console.error('Error fetching preview:', error);
+        }
+      }
+    };
+
+    fetchPreview();
+  }, [link.link, isUrl]); // Only re-run if the link or isUrl changes
 
   return (
     <div className="link-card" style={{
