@@ -13,6 +13,12 @@ const Link = ({ link }) => {
 
   const isUrl = urlRegex.test(link.link);
 
+  // Format the date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString();
+  };
+
   if (isUrl) {
     console.log(`Creating link card for link:`, link);
   }
@@ -27,14 +33,34 @@ const Link = ({ link }) => {
     }}>
       {isUrl ? (
         // Handle as link
-        <a href={link.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none'}}>
-          <LinkPreview url={link.link} width="100%" />
-        </a>
+        <>
+          <a href={link.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none'}}>
+            <LinkPreview url={link.link} width="100%" />
+          </a>
+          <div style={{
+            fontSize: '0.8rem',
+            color: '#666',
+            marginTop: '0.5rem',
+            textAlign: 'right'
+          }}>
+            Added: {formatDate(link.date)}
+          </div>
+        </>
       ) : (
         // Handle as markdown
-        <div className="markdown-content">
-          <ReactMarkdown>{link.link}</ReactMarkdown>
-        </div>
+        <>
+          <div className="markdown-content">
+            <ReactMarkdown>{link.link}</ReactMarkdown>
+          </div>
+          <div style={{
+            fontSize: '0.8rem',
+            color: '#666',
+            marginTop: '0.5rem',
+            textAlign: 'right'
+          }}>
+            {formatDate(link.date)}
+          </div>
+        </>
       )}
       <div style={{marginTop: '1rem', display: 'flex', justifyContent: 'flex-end'}}>
         <Button 

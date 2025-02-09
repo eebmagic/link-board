@@ -27,7 +27,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Post />
+        <Post style={{ width: '100%', maxWidth: '800px' }} />
         <div style={{
           display: 'flex',
           flexDirection: 'column',

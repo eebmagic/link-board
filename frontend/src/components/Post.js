@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
+import ReactMarkdown from 'react-markdown';
 
 const Post = ({ onLinkAdded }) => {
-  const [link, setLink] = useState('');
+  const [text, setText] = useState('');
+  const [isPreview, setIsPreview] = useState(false);
 
   const handleSubmit = async () => {
     try {
@@ -12,17 +14,15 @@ const Post = ({ onLinkAdded }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ link }),
+        body: JSON.stringify({ link: text }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to post link');
       }
 
-      // Clear input after successful post
-      setLink('');
-      
-      // Trigger refresh of links
+      setText('');
+
       if (onLinkAdded) {
         onLinkAdded();
       }
@@ -31,14 +31,41 @@ const Post = ({ onLinkAdded }) => {
     }
   };
 
+  // Check if input contains multiple lines
+  const isMultiline = text.includes('\n');
+
   return (
-    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-      <InputText
-        value={link}
-        onChange={(e) => setLink(e.target.value)}
-        placeholder="Enter a URL"
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1rem',
+      marginTop: '1rem',
+      width: '80%',
+      maxWidth: '600px'
+    }}>
+      <InputTextarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Enter a URL or text (supports Markdown)"
+        rows={5}
+        style={{ width: '100%' }}
       />
-      <Button label="Add Link" onClick={handleSubmit} />
+
+      {isMultiline && (
+        <div style={{
+          backgroundColor: '#f5f5f5',
+          padding: '1rem',
+          borderRadius: '4px',
+          textAlign: 'left',
+          color: '#333'
+        }}>
+          <ReactMarkdown>{text}</ReactMarkdown>
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+        <Button label="Add" onClick={handleSubmit} />
+      </div>
     </div>
   );
 };
