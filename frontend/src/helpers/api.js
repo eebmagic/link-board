@@ -54,3 +54,18 @@ export const deleteLink = async (idx) => {
 
     return response.json();
 };
+
+export const getLinkPreview = async (url) => {
+    const response = await fetch(`${API_BASE}/preview?url=${encodeURIComponent(url)}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch preview');
+    }
+
+    return response.json();
+};
