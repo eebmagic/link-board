@@ -3,13 +3,14 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import ReactMarkdown from 'react-markdown';
 import { addLink } from '../helpers/api';
+import 'primeicons/primeicons.css';
 
 const Post = ({ onLinkAdded, showToast }) => {
   const [text, setText] = useState('');
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (manualText) => {
     try {
-      await addLink(text);
+      await addLink(manualText || text);
       setText('');
       showToast('success', 'Success', 'Link added successfully');
 
@@ -19,6 +20,17 @@ const Post = ({ onLinkAdded, showToast }) => {
     } catch (error) {
       console.error('Error posting link:', error);
       showToast('error', 'Error', 'Failed to add link');
+    }
+  };
+
+  const handlePaste = async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      setText(clipboardText);
+      handleSubmit(clipboardText);
+    } catch (error) {
+      console.error('Error pasting from clipboard:', error);
+      showToast('error', 'Error', 'Failed to paste from clipboard');
     }
   };
 
@@ -55,7 +67,19 @@ const Post = ({ onLinkAdded, showToast }) => {
       )}
 
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-        <Button label="Add" onClick={handleSubmit} />
+        <Button
+          label="Paste + Post"
+          icon="pi pi-file-arrow-up"
+          severity="success"
+          onClick={handlePaste}
+          tooltip="Paste from clipboard"
+          tooltipOptions={{ position: 'bottom' }}
+        />
+        <Button
+          label="Add"
+          icon="pi pi-plus"
+          onClick={handleSubmit}
+        />
       </div>
     </div>
   );

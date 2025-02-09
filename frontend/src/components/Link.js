@@ -67,7 +67,6 @@ const Link = ({ link, onDelete }) => {
         try {
           const prevresult = await getLinkPreview(link.link);
           setPreview(prevresult);
-          console.log(`Preview:`, prevresult);
         } catch (error) {
           console.error('Error fetching preview:', error);
         }
