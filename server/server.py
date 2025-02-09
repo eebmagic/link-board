@@ -48,7 +48,7 @@ def addToFile(link):
     try:
         data = readfile()
         data.insert(0, obj)
-        
+
         with open(datafile, 'w') as file:
             json.dump(data, file)
 
@@ -63,6 +63,20 @@ def readfile():
         content = json.load(file)
 
     return content
+
+def deleteFromFile(idx):
+    datafile = checkfile()
+    try:
+        data = readfile()
+        data = [item for item in data if item['idx'] != idx]
+
+        with open(datafile, 'w') as file:
+            json.dump(data, file)
+
+        return True
+    except Exception as e:
+        print(f'failed to delete from file with e', e)
+        return False
 
 
 # Serve React App
@@ -82,10 +96,8 @@ def get_signin_url():
 
     # Read from the file
     data = readfile()
-
     payload = data[offset:offset+n]
-    
-    
+
     # Return payload
     return jsonify(payload), 200
 
@@ -127,6 +139,32 @@ def login():
             'error': str(e),
         }
         return jsonify(payload), 500
+
+@app.route('/delete/<idx>', methods=['DELETE'])
+def delete_link(idx):
+    '''
+    DELETE a link from the board by its idx.
+    '''
+    try:
+        success = deleteFromFile(idx)
+
+        if not success:
+            return jsonify({
+                'success': False,
+                'message': 'Server failed to delete link',
+            }), 500
+
+        return jsonify({
+            'success': True,
+            'message': 'Deleted successfully!',
+        }), 200
+    except Exception as e:
+        print('Error deleting link:', e)
+        return jsonify({
+            'success': False,
+            'message': 'Server failed to delete link',
+            'error': str(e),
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=3024)
