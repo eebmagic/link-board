@@ -78,13 +78,25 @@ const Link = ({ link, onDelete }) => {
   }, [link.link, isUrl]); // Only re-run if the link or isUrl changes
 
   return (
-    <div className="link-card" style={{
-      margin: '1rem',
-      padding: '1rem',
-      border: '1px solid #ddd',
-      borderRadius: '8px',
-      maxWidth: '500px'
-    }}>
+    <div
+      className="link-card"
+      style={{
+        margin: '1rem',
+        padding: '1rem',
+        border: '1px solid #ddd',
+        borderRadius: '8px',
+        maxWidth: '500px',
+        ...(isUrl && { cursor: 'pointer' })  // Only add pointer cursor if it's a URL
+      }}
+      {...(isUrl && {
+        onClick: (e) => {
+          // Only open URL if not clicking on buttons
+          if (!e.target.closest('button')) {
+            window.open(link.link, '_blank', 'noopener noreferrer');
+          }
+        }
+      })}
+    >
       <Toast ref={toast} />
       {isUrl ? (
         // Handle as link
@@ -94,12 +106,12 @@ const Link = ({ link, onDelete }) => {
           {preview && (
             <div>
               <h3>{preview.title}</h3>
-              <p>{preview.description}</p>
               {
-                preview.images && preview.images.length > 0 && (
-                  <img src={preview.images[0]} alt={preview.title} />
+                preview.image && (
+                  <img src={preview.image} alt={preview.title} style={{maxWidth: '100%'}} />
                 )
               }
+              <p>{preview.description}</p>
             </div>
           )}
           {/* </a> */}
