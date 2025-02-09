@@ -36,9 +36,10 @@ in pkgs.mkShell {
     if [ ! -d .venv ]; then
       python -m venv .venv
       source .venv/bin/activate
-      pip install requests flask flask-cors hyperlink-preview
+      pip install requests flask flask-cors beautifulsoup4
     else
       source .venv/bin/activate
+      pip install requests flask flask-cors beautifulsoup4
     fi
 
     # Set up Node.js environment variables
