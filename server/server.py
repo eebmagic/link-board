@@ -7,6 +7,7 @@ from datetime import timezone
 # Library imports
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import hyperlink_preview as HLP
 
 app = Flask(__name__,
     static_folder='../frontend/build',
@@ -164,6 +165,23 @@ def delete_link(idx):
             'success': False,
             'message': 'Server failed to delete link',
             'error': str(e),
+        }), 500
+
+@app.route('/preview', methods=['GET'])
+def get_preview():
+    url = request.args.get('url')
+    if not url:
+        return jsonify({'error': 'No URL provided'}), 400
+
+    try:
+        preview = HLP.HyperLinkPreview(url=url)
+        preview = preview.get_data()
+        return jsonify(preview), 200
+    except Exception as e:
+        print('Error fetching preview:', e)
+        return jsonify({
+            'error': 'Failed to fetch preview',
+            'message': str(e)
         }), 500
 
 if __name__ == '__main__':

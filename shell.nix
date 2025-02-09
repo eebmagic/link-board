@@ -35,7 +35,7 @@ in pkgs.mkShell {
     if [ ! -d .venv ]; then
       python -m venv .venv
       source .venv/bin/activate
-      pip install requests flask flask-cors
+      pip install requests flask flask-cors hyperlink-preview
     else
       source .venv/bin/activate
     fi
