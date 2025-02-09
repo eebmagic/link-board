@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import ReactMarkdown from 'react-markdown';
+import { addLink } from '../helpers/api';
 
 const Post = ({ onLinkAdded }) => {
   const [text, setText] = useState('');
@@ -9,18 +10,7 @@ const Post = ({ onLinkAdded }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://links.ebolton.site/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ link: text }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to post link');
-      }
-
+      await addLink(text);
       setText('');
 
       if (onLinkAdded) {

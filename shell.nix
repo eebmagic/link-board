@@ -45,7 +45,7 @@ in pkgs.mkShell {
     
     # Set React API URL based on environment
     ${lib.concatMapStringsSep "\n" (name: "export ${name}=${envVars.${name}}") (lib.attrNames envVars)}
-    echo "Using REACT_APP_API_URL: $REACT_APP_API_URL"
+    # echo "Using REACT_APP_API_URL: $REACT_APP_API_URL"
 
     # Install frontend dependencies if node_modules doesn't exist
     if [ ! -d frontend/node_modules ]; then

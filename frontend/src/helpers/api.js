@@ -1,4 +1,4 @@
-const API_BASE = 'http://links.ebolton.site'
+const API_BASE = 'https://links.ebolton.site'
 
 export const getLinks = async (offset, n) => {
     const queryString = new URLSearchParams({
@@ -23,4 +23,20 @@ export const getLinks = async (offset, n) => {
     const links = await result.json();
     return links;
 }
+
+export const addLink = async (text) => {
+    const response = await fetch(`${API_BASE}/add`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ link: text }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to post link');
+    }
+
+    return response.json();
+};
 
