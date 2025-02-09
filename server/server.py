@@ -3,6 +3,10 @@ import json
 import os
 from datetime import datetime
 from datetime import timezone
+import sys
+
+hyper_preview_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperlink_preview")
+sys.path.append(hyper_preview_path)
 
 # Library imports
 from flask import Flask, request, jsonify, send_from_directory

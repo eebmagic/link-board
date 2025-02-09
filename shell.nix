@@ -4,6 +4,7 @@ let
   pythonPackages = ps: with ps; [
     pip  # Add pip explicitly
     requests
+    beautifulsoup4
     flask
     flask-cors
   ];
@@ -66,3 +67,4 @@ in pkgs.mkShell {
   PYTHONPATH = "./server";
   NODE_ENV = "development";
 }
+
