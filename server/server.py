@@ -77,8 +77,8 @@ def get_signin_url():
     Get all the last N links in the board.
     '''
     # Get request args
-    offset = request.args.get('offset') or 0
-    n = request.args.get('n') or 10
+    offset = int(request.args.get('offset') or 0)
+    n = int(request.args.get('n') or 10)
 
     # Read from the file
     data = readfile()
