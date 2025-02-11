@@ -8,9 +8,9 @@ import 'primeicons/primeicons.css';
 const Post = ({ onLinkAdded, showToast }) => {
   const [text, setText] = useState('');
 
-  const handleSubmit = async (manualText) => {
+  const handleSubmit = async (text) => {
     try {
-      await addLink(manualText || text);
+      await addLink(text);
       setText('');
       showToast('success', 'Success', 'Link added successfully');
 
@@ -78,7 +78,7 @@ const Post = ({ onLinkAdded, showToast }) => {
         <Button
           label="Add"
           icon="pi pi-plus"
-          onClick={handleSubmit}
+          onClick={() => handleSubmit(text)}
         />
       </div>
     </div>
