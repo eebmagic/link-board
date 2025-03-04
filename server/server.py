@@ -48,6 +48,7 @@ def addToFile(link):
         'idx': uuid.uuid4().hex,
         'link': link,
         'date': datestr,
+        'description': generatePreview(link),
     }
 
     try:
@@ -83,6 +84,12 @@ def deleteFromFile(idx):
         print(f'failed to delete from file with e', e)
         return False
 
+def generatePreview(url):
+    preview = HLP.HyperLinkPreview(url=url)
+    preview = preview.get_data()
+
+    return preview
+
 
 # Serve React App
 @app.route('/')
@@ -105,7 +112,6 @@ def get_signin_url():
 
     # Return payload
     return jsonify(payload), 200
-
 
 @app.route('/add', methods=['POST'])
 def login():
@@ -178,14 +184,30 @@ def get_preview():
         return jsonify({'error': 'No URL provided'}), 400
 
     try:
-        preview = HLP.HyperLinkPreview(url=url)
-        preview = preview.get_data()
+        preview = generatePreview(url)
         return jsonify(preview), 200
     except Exception as e:
         print('Error fetching preview:', e)
         return jsonify({
             'error': 'Failed to fetch preview',
             'message': str(e)
+        }), 500
+
+@app.route('/update/<idx>', methods=['POST'])
+def update_description(idx):
+    '''
+    POST an update to a link description
+    '''
+    try:
+        description = request.get_json()
+        print(f'Got a post request with this description', json.dumps(description, indent=2))
+
+    except Exception as e:
+        print('Error updating description:', e)
+        return jsonify({
+            'success': False,
+            'message': 'Server failed to update a description',
+            'error': str(e),
         }), 500
 
 if __name__ == '__main__':

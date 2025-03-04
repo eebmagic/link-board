@@ -1,4 +1,5 @@
-const API_BASE = 'https://links.ebolton.site'
+// const API_BASE = 'https://links.ebolton.site'
+const API_BASE = 'http://localhost:3024'
 
 export const getLinks = async (offset, n) => {
     const queryString = new URLSearchParams({
@@ -65,6 +66,22 @@ export const getLinkPreview = async (url) => {
 
     if (!response.ok) {
         throw new Error('Failed to fetch preview');
+    }
+
+    return response.json();
+};
+
+export const updateDescription = async (idx, description) => {
+    const response = await fetch(`${API_BASE}/update/${idx}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ description }),
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to update description');
     }
 
     return response.json();
