@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@dhaiwat10/react-link-preview": "^1.15.0",
     "cra-template": "1.2.0",
     "link-preview-js": "^3.0.13",
     "primeicons": "^7.0.0",

@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-// import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { getLinkPreview } from '../helpers/api';
 import { Button } from 'primereact/button';
 import ReactMarkdown from 'react-markdown';
