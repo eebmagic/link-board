@@ -8,6 +8,8 @@ import { Toast } from 'primereact/toast';
 import Post from './components/Post.js';
 import Link from './components/Link.js';
 import { getLinks } from './helpers/api.js';
+import githubMark from './images/github-mark.svg';
+
 
 function App() {
   const [links, setLinks] = useState([]);
@@ -43,6 +45,19 @@ function App() {
     <div className="App">
       <Toast ref={toast} />
       <header className="App-header">
+        <a
+          href="https://github.com/eebmagic/link-board"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            position: 'absolute',
+            top: '10px',
+            left: '10px'
+          }}
+        >
+          <img src={githubMark} alt="GitHub Mark" style={{ width: '30px', height: '30px', filter: 'invert(100%)' }} />
+        </a>
+
         <Post style={{ width: '100%', maxWidth: '800px' }} onLinkAdded={fetchLinks} showToast={showToast} />
         <div style={{
           display: 'flex',

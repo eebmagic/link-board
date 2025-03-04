@@ -27,7 +27,6 @@ const Post = ({ onLinkAdded, showToast }) => {
     try {
       const clipboardText = await navigator.clipboard.readText();
       setText(clipboardText);
-      handleSubmit(clipboardText);
     } catch (error) {
       console.error('Error pasting from clipboard:', error);
       showToast('error', 'Error', 'Failed to paste from clipboard');
@@ -68,16 +67,17 @@ const Post = ({ onLinkAdded, showToast }) => {
 
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
         <Button
-          label="Paste + Post"
+          label="Paste"
           icon="pi pi-file-arrow-up"
-          severity="success"
+          severity="secondary"
           onClick={handlePaste}
           tooltip="Paste from clipboard"
           tooltipOptions={{ position: 'bottom' }}
         />
         <Button
-          label="Add"
+          label="Post"
           icon="pi pi-plus"
+          severity="success"
           onClick={() => handleSubmit(text)}
         />
       </div>
