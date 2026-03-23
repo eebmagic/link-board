@@ -55,6 +55,22 @@ export const deleteLink = async (idx) => {
     return response.json();
 };
 
+export const editLink = async (idx, title) => {
+    const response = await fetch(`${API_BASE}/update/${idx}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to edit link');
+    }
+
+    return response.json();
+};
+
 export const getLinkPreview = async (url) => {
     const response = await fetch(`${API_BASE}/preview?url=${encodeURIComponent(url)}`, {
         method: 'GET',
