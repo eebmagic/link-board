@@ -51,18 +51,21 @@ function App() {
     <div className="App">
       <Toast ref={toast} />
       <header className="App-header">
-        <a
-          href="https://github.com/eebmagic/link-board"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            position: 'absolute',
-            top: '10px',
-            left: '10px'
-          }}
-        >
-          <img src={githubMark} alt="GitHub Mark" style={{ width: '30px', height: '30px', filter: 'invert(100%)' }} />
-        </a>
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '15px',
+          boxSizing: 'border-box'
+        }}>
+          <a
+            href="https://github.com/eebmagic/link-board"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={githubMark} alt="GitHub Mark" style={{ width: '30px', height: '30px', filter: 'invert(100%)' }} />
+          </a>
+        </div>
 
         <Post style={{ width: '100%', maxWidth: '800px' }} onLinkAdded={fetchLinks} showToast={showToast} />
         <div style={{
