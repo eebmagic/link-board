@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { getLinkPreview } from '../helpers/api';
 import { Button } from 'primereact/button';
 import ReactMarkdown from 'react-markdown';
-import { deleteLink } from '../helpers/api';
+import { deleteLink, editLink } from '../helpers/api';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
+import { InputText } from 'primereact/inputtext';
 
-const Link = ({ link, onDelete }) => {
+const Link = ({ link, onChange }) => {
   const toast = useRef(null);
 
   const copyToClipboard = () => {
@@ -20,14 +21,16 @@ const Link = ({ link, onDelete }) => {
   };
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [linkTitle, setLinkTitle] = useState(link.title);
 
   const handleDelete = async () => {
     try {
       await deleteLink(link.idx);
-      if (onDelete) {
-        onDelete(link.idx);
-      }
+      onChange();
+
       setShowDeleteDialog(false);
+
       console.log('Creating success toast');
       toast.current.show({
         severity: 'success',
@@ -41,6 +44,34 @@ const Link = ({ link, onDelete }) => {
         severity: 'error',
         summary: 'Error',
         detail: 'Failed to delete item',
+        life: 3000
+      });
+    }
+  };
+
+  const handleEdit = async () => {
+    try {
+      await editLink(link.idx, linkTitle);
+      setShowEditDialog(false);
+      toast.current.show({
+        severity: 'success',
+        summary: 'Edited',
+        detail: 'Item successfully edited',
+        life: 3000
+      });
+
+      // Update in view and up the parent component
+      setPreview({
+        ...preview,
+        title: linkTitle,
+      });
+      onChange();
+    } catch (error) {
+      console.error('Error editing link:', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to edit item',
         life: 3000
       });
     }
@@ -65,7 +96,13 @@ const Link = ({ link, onDelete }) => {
       if (isUrl) {
         try {
           const prevresult = await getLinkPreview(link.link);
-          setPreview(prevresult);
+          const enriched = {
+            ...prevresult,
+            ...link,
+          };
+
+          setPreview(enriched);
+          setLinkTitle(enriched.title);
         } catch (error) {
           console.error('Error fetching preview:', error);
         }
@@ -147,6 +184,13 @@ const Link = ({ link, onDelete }) => {
           tooltipOptions={{ position: 'top' }}
         />
         <Button
+          icon="pi pi-pencil"
+          severity="success"
+          onClick={() => setShowEditDialog(true)}
+          tooltip="Edit Title"
+          tooltipOptions={{ position: 'top' }}
+        />
+        <Button
           icon="pi pi-copy"
           onClick={copyToClipboard}
           tooltip="Copy content"
@@ -166,6 +210,30 @@ const Link = ({ link, onDelete }) => {
         }
       >
         <p>Are you sure you want to delete this item?</p>
+      </Dialog>
+      <Dialog
+        visible={showEditDialog}
+        onHide={() => setShowEditDialog(false)}
+        header="Edit Link Title"
+        footer={
+          <div>
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              onClick={() => setShowDeleteDialog(false)}
+              className="p-button-text"
+            />
+            <Button
+              label="Yes"
+              icon="pi pi-check"
+              onClick={handleEdit}
+              severity="success"
+              autoFocus
+            />
+          </div>
+        }
+      >
+        <InputText value={linkTitle} onChange={(e) => setLinkTitle(e.target.value)} />
       </Dialog>
     </div>
   );

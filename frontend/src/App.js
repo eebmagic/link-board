@@ -28,8 +28,9 @@ function App() {
     }
   };
 
-  const handleDelete = (idx) => {
-    setLinks(links.filter(link => link.idx !== idx));
+  const handleChange = () => {
+    // Make request to get the links again now that a change was made
+    fetchLinks();
   };
 
   const showToast = (severity, summary, detail) => {
@@ -67,7 +68,7 @@ function App() {
           marginTop: '2rem'
         }}>
           {links.map(link => (
-            <Link key={link.idx} link={link} onDelete={handleDelete} />
+            <Link key={link.idx} link={link} onChange={handleChange}/>
           ))}
         </div>
       </header>
