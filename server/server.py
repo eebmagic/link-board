@@ -171,6 +171,48 @@ def delete_link(idx):
             'error': str(e),
         }), 500
 
+@app.route('/update/<idx>', methods=['PUT'])
+def update_link(idx):
+    '''
+    PUT a link to the board.
+    Will update the link in the file.
+    '''
+    title = request.json.get('title')
+    if not title:
+        return jsonify({'error': 'No title provided'}), 400
+
+    try:
+        data = readfile()
+        target_idx = None
+        for i, item in enumerate(data):
+            if item['idx'] == idx:
+                target_idx = i
+                break
+
+        if target_idx == None:
+            return jsonify({
+                'success': False,
+                'message': f'Link with idx {idx} not found',
+            }), 404
+
+        data[target_idx]['title'] = title
+
+        with open(checkfile(), 'w') as datafile:
+            json.dump(data, datafile)
+
+        print(f'Updated link {idx} with title {title}')
+        return jsonify({
+            'success': True,
+            'message': 'Updated successfully!',
+        }), 200
+    except Exception as e:
+        print('Error updating link:', e)
+        return jsonify({
+            'success': False,
+            'message': 'Server failed to update link',
+            'error': str(e),
+        }), 500
+
 @app.route('/preview', methods=['GET'])
 def get_preview():
     url = request.args.get('url')
