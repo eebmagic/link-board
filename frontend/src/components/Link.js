@@ -125,10 +125,10 @@ const Link = ({ link, onChange }) => {
       }}
       {...(isUrl && {
         onClick: (e) => {
-          // Only open URL if not clicking on buttons
-          if (!e.target.closest('button')) {
-            window.open(link.link, '_blank', 'noopener noreferrer');
-          }
+          if (showDeleteDialog || showEditDialog) return;
+          if (e.target.closest('button')) return;
+
+          window.open(link.link, '_blank', 'noopener noreferrer');
         }
       })}
     >
@@ -204,8 +204,7 @@ const Link = ({ link, onChange }) => {
         header="Confirm Deletion"
         footer={
           <div>
-            <Button label="No" icon="pi pi-times" onClick={() => setShowDeleteDialog(false)} className="p-button-text" />
-            <Button label="Yes" icon="pi pi-check" onClick={handleDelete} severity="danger" autoFocus />
+            <Button label="Delete" icon="pi pi-check" onClick={handleDelete} severity="danger" autoFocus />
           </div>
         }
       >
@@ -215,16 +214,11 @@ const Link = ({ link, onChange }) => {
         visible={showEditDialog}
         onHide={() => setShowEditDialog(false)}
         header="Edit Link Title"
+        style={{ width: '50vh' }}
         footer={
           <div>
             <Button
-              label="Cancel"
-              icon="pi pi-times"
-              onClick={() => setShowDeleteDialog(false)}
-              className="p-button-text"
-            />
-            <Button
-              label="Yes"
+              label="Update"
               icon="pi pi-check"
               onClick={handleEdit}
               severity="success"
@@ -233,7 +227,11 @@ const Link = ({ link, onChange }) => {
           </div>
         }
       >
-        <InputText value={linkTitle} onChange={(e) => setLinkTitle(e.target.value)} />
+        <InputText
+          value={linkTitle}
+          onChange={(e) => setLinkTitle(e.target.value)}
+          style={{ width: '100%' }}
+        />
       </Dialog>
     </div>
   );
