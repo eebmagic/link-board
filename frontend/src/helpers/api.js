@@ -1,13 +1,8 @@
 const API_BASE = 'https://links.ebolton.site'
 
-export const getLinks = async (offset, n) => {
-    const queryString = new URLSearchParams({
-        offset: offset || 0,
-        n: n || 10,
-    }).toString();
-
+export const getLinks = async () => {
     const result = await fetch(
-        `${API_BASE}/links?${queryString}`,
+        `${API_BASE}/links`,
         {
             method: 'GET',
             headers: {
