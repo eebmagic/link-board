@@ -37,6 +37,15 @@ def checkfile():
     return datafile
 
 
+def getPreview(link):
+    try:
+        preview = HLP.HyperLinkPreview(url=link)
+        preview = preview.get_data()
+        return preview
+    except Exception as e:
+        print('Error fetching preview:', e)
+        return None
+
 def addToFile(link):
     # Create emtpy file if os.path does not exist
     datafile = checkfile()
@@ -50,6 +59,14 @@ def addToFile(link):
         'date': datestr,
     }
 
+    # Get preview and add to object
+    preview = getPreview(link)
+    if preview:
+        for key, value in preview.items():
+            obj[key] = value
+            obj['previewIsCached'] = True
+
+    # Write to file
     try:
         data = readfile()
         data.insert(0, obj)
@@ -220,8 +237,31 @@ def get_preview():
         return jsonify({'error': 'No URL provided'}), 400
 
     try:
+        # Check if preview is already cached in the file:
+        data = readfile()
+        idx = None
+        obj = None
+        for i, item in enumerate(data):
+            if item['link'] == url:
+                idx = i
+                obj = item
+                break
+        
+        if obj and obj.get("previewIsCached", False):
+            return jsonify(obj), 200
+
         preview = HLP.HyperLinkPreview(url=url)
         preview = preview.get_data()
+
+        if preview:
+            for key, value in preview.items():
+                obj[key] = value
+            obj['previewIsCached'] = True
+            data[idx] = obj
+
+            with open(checkfile(), 'w') as datafile:
+                json.dump(data, datafile)
+
         return jsonify(preview), 200
     except Exception as e:
         print('Error fetching preview:', e)

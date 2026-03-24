@@ -95,7 +95,11 @@ const Link = ({ link, onChange }) => {
     const fetchPreview = async () => {
       if (isUrl) {
         try {
-          const prevresult = await getLinkPreview(link.link);
+          let prevresult = link;
+          if (!link.previewIsCached) {
+            prevresult = await getLinkPreview(link.link);
+            setPreview(prevresult);
+          }
           const enriched = {
             ...prevresult,
             ...link,
