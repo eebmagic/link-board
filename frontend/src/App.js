@@ -30,6 +30,20 @@ function App() {
     setLinks(links.filter(link => link.idx !== idx));
   };
 
+  const handleEdit = (idx, title) => {
+    console.log('handleEdit:', idx, title);
+    try {
+      setLinks(links.map(link => link.idx === idx ? { ...link, title: title } : link));
+    } catch (error) {
+      console.error('Error editing link:', error);
+    }
+  };
+
+  const handleChange = () => {
+    // Make request to get the links again now that a change was made
+    fetchLinks();
+  };
+
   const showToast = (severity, summary, detail) => {
     toast.current.show({
       severity: severity,
@@ -52,7 +66,7 @@ function App() {
           marginTop: '2rem'
         }}>
           {links.map(link => (
-            <Link key={link.idx} link={link} onDelete={handleDelete} />
+            <Link key={link.idx} link={link} onDelete={handleDelete} onEdit={handleEdit} onChange={handleChange}/>
           ))}
         </div>
       </header>

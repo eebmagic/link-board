@@ -8,7 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import { InputText } from 'primereact/inputtext';
 
-const Link = ({ link, onDelete }) => {
+const Link = ({ link, onDelete, onEdit, onChange }) => {
   const toast = useRef(null);
 
   const copyToClipboard = () => {
@@ -29,7 +29,8 @@ const Link = ({ link, onDelete }) => {
     try {
       await deleteLink(link.idx);
       if (onDelete) {
-        onDelete(link.idx);
+        // onDelete(link.idx);
+        onChange();
       }
       setShowDeleteDialog(false);
       console.log('Creating success toast');
@@ -60,6 +61,16 @@ const Link = ({ link, onDelete }) => {
         detail: 'Item successfully edited',
         life: 3000
       });
+
+      // Update in view and up the parent component
+      setPreview({
+        ...preview,
+        title: linkTitle,
+      });
+      if (onEdit) {
+        // onEdit(link.idx, linkTitle);
+        onChange();
+      }
     } catch (error) {
       console.error('Error editing link:', error);
       toast.current.show({
