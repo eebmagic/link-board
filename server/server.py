@@ -36,7 +36,6 @@ def checkfile():
 
     return datafile
 
-
 def getPreview(link):
     try:
         preview = HLP.HyperLinkPreview(url=link)
@@ -110,18 +109,13 @@ def serve():
 @app.route('/links', methods=['GET'])
 def get_signin_url():
     '''
-    Get all the last N links in the board.
+    Get all the links in the board.
     '''
-    # Get request args
-    offset = int(request.args.get('offset') or 0)
-    n = int(request.args.get('n') or 10)
-
     # Read from the file
     data = readfile()
-    payload = data[offset:offset+n]
 
     # Return payload
-    return jsonify(payload), 200
+    return jsonify(data), 200
 
 
 @app.route('/add', methods=['POST'])
