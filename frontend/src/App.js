@@ -28,9 +28,14 @@ function App() {
     }
   };
 
-  const handleChange = () => {
+  const handleChange = (toastInfo) => {
     // Make request to get the links again now that a change was made
     fetchLinks();
+
+    // Show toast if provided
+    if (toastInfo) {
+      showToast(toastInfo.severity, toastInfo.summary, toastInfo.detail);
+    }
   };
 
   const showToast = (severity, summary, detail) => {

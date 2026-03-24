@@ -27,16 +27,12 @@ const Link = ({ link, onChange }) => {
   const handleDelete = async () => {
     try {
       await deleteLink(link.idx);
-      onChange();
-
       setShowDeleteDialog(false);
 
-      console.log('Creating success toast');
-      toast.current.show({
+      onChange({
         severity: 'success',
         summary: 'Deleted',
-        detail: 'Item successfully deleted',
-        life: 3000
+        detail: 'Item successfully deleted'
       });
     } catch (error) {
       console.error('Error deleting link:', error);
@@ -53,19 +49,18 @@ const Link = ({ link, onChange }) => {
     try {
       await editLink(link.idx, linkTitle);
       setShowEditDialog(false);
-      toast.current.show({
-        severity: 'success',
-        summary: 'Edited',
-        detail: 'Item successfully edited',
-        life: 3000
-      });
 
       // Update in view and up the parent component
       setPreview({
         ...preview,
         title: linkTitle,
       });
-      onChange();
+
+      onChange({
+        severity: 'success',
+        summary: 'Edited',
+        detail: 'Item successfully edited'
+      });
     } catch (error) {
       console.error('Error editing link:', error);
       toast.current.show({
@@ -81,7 +76,6 @@ const Link = ({ link, onChange }) => {
   const urlRegex = /^https?:\/\//;
 
   const isUrl = urlRegex.test(link.link);
-  console.log(`Link is URL:`, isUrl, link.link);
 
   // Format the date
   const formatDate = (dateString) => {
@@ -140,8 +134,6 @@ const Link = ({ link, onChange }) => {
       {isUrl ? (
         // Handle as link
         <>
-          {/* <a href={link.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none'}}> */}
-          {/* <LinkPreview url={link.link} width="100%" /> */}
           {preview && (
             <div>
               <h3>{preview.title}</h3>
@@ -153,7 +145,6 @@ const Link = ({ link, onChange }) => {
               <p>{preview.description}</p>
             </div>
           )}
-          {/* </a> */}
           <div style={{
             fontSize: '0.8rem',
             color: '#666',
