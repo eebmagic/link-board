@@ -8,7 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import { InputText } from 'primereact/inputtext';
 
-const Link = ({ link, onDelete, onEdit, onChange }) => {
+const Link = ({ link, onChange }) => {
   const toast = useRef(null);
 
   const copyToClipboard = () => {
@@ -28,11 +28,10 @@ const Link = ({ link, onDelete, onEdit, onChange }) => {
   const handleDelete = async () => {
     try {
       await deleteLink(link.idx);
-      if (onDelete) {
-        // onDelete(link.idx);
-        onChange();
-      }
+      onChange();
+
       setShowDeleteDialog(false);
+
       console.log('Creating success toast');
       toast.current.show({
         severity: 'success',
@@ -67,10 +66,7 @@ const Link = ({ link, onDelete, onEdit, onChange }) => {
         ...preview,
         title: linkTitle,
       });
-      if (onEdit) {
-        // onEdit(link.idx, linkTitle);
-        onChange();
-      }
+      onChange();
     } catch (error) {
       console.error('Error editing link:', error);
       toast.current.show({
@@ -101,13 +97,11 @@ const Link = ({ link, onDelete, onEdit, onChange }) => {
       if (isUrl) {
         try {
           const prevresult = await getLinkPreview(link.link);
-          console.log('link:', link);
-          console.log('prevresult:', prevresult);
           const enriched = {
             ...prevresult,
             ...link,
           };
-          console.log('enriched:', enriched);
+
           setPreview(enriched);
           setLinkTitle(enriched.title);
         } catch (error) {
